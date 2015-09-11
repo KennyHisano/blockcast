@@ -147,14 +147,11 @@ describe("bitcoin transaction builder", function() {
       commonWallet: commonWallet,
       commonBlockchain: commonBlockchain
     }, function(err, signedTransactions, txid) {
-      console.log("createSignedTransactionsWithData callback", err, signedTransactions, txid);
       expect(signedTransactions.length).toBe(1);
       var primaryTxHex = signedTransactions[0];
       var primaryTx = txHexToJSON(primaryTxHex);
       expect(primaryTx.txid).toBe(txid);
-      console.log("primaryTx", primaryTx);
       var primaryData = new Buffer(primaryTx.vout[0].scriptPubKey.hex, 'hex');
-      console.log("primaryData", primaryData);
       var length = dataPayload.parse(primaryData.slice(2, primaryData.length));
       expect(length).toBe(1);
       bitcoinTransactionBuilder.getData({transactions:signedTransactions}, function(error, decodedTransactions) {
