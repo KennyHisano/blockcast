@@ -11,6 +11,8 @@ var commonBlockchain = require("mem-common-blockchain")();
 var env = require('node-env-file');
 env('./.env', { raise: false });
 
+var BLOCKCYPHER_TOKEN = process.env.BLOCKCYPHER_TOKEN;
+
 var testnetCommonBlockchain = require('blockcypher-unofficial')({
   key: BLOCKCYPHER_TOKEN,
   network: "testnet"
