@@ -89,6 +89,7 @@ describe("blockcast", function() {
       commonWallet: commonWallet,
       commonBlockchain: commonBlockchain
     }, function(error, blockcastTx) {
+      console.log(blockcastTx);
       expect(blockcastTx.data).toBe(JSONdata);
       expect(blockcastTx.txid).toBeDefined();
       expect(blockcastTx.transactionTotal).toBe(3);
@@ -122,6 +123,7 @@ describe("blockcast", function() {
         commonWallet: commonWallet,
         commonBlockchain: commonBlockchain
       }, function(error, blockcastTx) {
+        console.log(blockcastTx);
         expect(blockcastTx.data).toBe(data);
         expect(blockcastTx.txid).toBeDefined();
         expect(blockcastTx.transactionTotal).toBe(1);
@@ -149,19 +151,19 @@ describe("blockcast", function() {
     });
   });
 
-  it("should scan single txid 884db69602bffa8be074068ac8ee44fa37e31817b56a9092c996587d40e01742", function(done) {    
-    var txid = "884db69602bffa8be074068ac8ee44fa37e31817b56a9092c996587d40e01742";
+  it("should scan single txid 7be2dbaab47b7f71d0fb8919824119a3e2ebbff23d0b5d4f15fa023f3d55eb95", function(done) {    
+    var txid = "7be2dbaab47b7f71d0fb8919824119a3e2ebbff23d0b5d4f15fa023f3d55eb95";
     blockcast.scanSingle({
       txid: txid,
       commonBlockchain: commonBlockchain
     }, function(err, data) {
-      expect(data).toBe("ykt2AA31pAwBnB1IgNdoxsqcO41KxhsxVmqwhmWsRTTLQ9sp8QXNhWaZ58HhzMHB2O3p9CBkcvNtBngU1bgeMtsZywKHBCVRQgsVm6CtfFgrHNr8uaGX6kFLT8hvbMW6ID0XTUFFSTT83DIEeS4SifaFwTPex20B27QvwR0DDm");
+      expect(data).toBe('{"op":"t","value":50000000,"sha1":"dd09da17ec523e92e38b5f141d9625a5e77bb9fa"}');
       done();
     });
   });
 
-  it("should scan single txid fe44cae45f69dd1d6115815356a73b9c5179feff1b276d99ac0e283156e1cd01", function(done) {    
-    var txid = "fe44cae45f69dd1d6115815356a73b9c5179feff1b276d99ac0e283156e1cd01";
+  it("should scan single txid 7cf57a5a9c7db909298db28b09271b497039e50ab8a26f200c8edaba68d0a190", function(done) {    
+    var txid = "7cf57a5a9c7db909298db28b09271b497039e50ab8a26f200c8edaba68d0a190";
     blockcast.scanSingle({
       txid: txid,
       commonBlockchain: commonBlockchain
@@ -171,17 +173,17 @@ describe("blockcast", function() {
     });
   });
 
-  it("should not scan single txid b32192c9d2d75a8a28dd4034ea61eacb0dfe4f226acb502cfe108df20fbddebc", function(done) {    
-    var txid = "b32192c9d2d75a8a28dd4034ea61eacb0dfe4f226acb502cfe108df20fbddebc";
-    blockcast.scanSingle({
-      txid: txid,
-      commonBlockchain: commonBlockchain
-    }, function(err, data) {
-      expect(data).toBe(false);
-      expect(err).toBe("not blockcast");
-      done();
-    });
-  });
+  // it("should not scan single txid b32192c9d2d75a8a28dd4034ea61eacb0dfe4f226acb502cfe108df20fbddebc", function(done) {    
+  //   var txid = "b32192c9d2d75a8a28dd4034ea61eacb0dfe4f226acb502cfe108df20fbddebc";
+  //   blockcast.scanSingle({
+  //     txid: txid,
+  //     commonBlockchain: commonBlockchain
+  //   }, function(err, data) {
+  //     expect(data).toBe(false);
+  //     expect(err).toBe("not blockcast");
+  //     done();
+  //   });
+  // });
 
   it("should post a message of a random string of 720 bytes and then scan (memCommonBlockchain) ", function(done) {
     var randomStringData = randomString(720);

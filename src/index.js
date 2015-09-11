@@ -79,7 +79,7 @@ var scanSingle = function(options, callback) {
   var transactionTotal;
   var length;
   var onTransaction = function(err, transactions) {
-    var tx = transactions[0];
+    var tx = txHexToJSON(transactions[0].txHex);
     if (!tx) {
       return callback(err, false);
     }
@@ -88,9 +88,9 @@ var scanSingle = function(options, callback) {
     for (var j = vout.length - 1; j >= 0; j--) {
       var output = vout[j];
       var scriptPubKey = output.scriptPubKey.hex;
-      var scriptPubKeyBuffer = new Buffer(scriptPubKey, 'hex');
-      if (scriptPubKeyBuffer[0] == 106) {
-        var data = scriptPubKeyBuffer.slice(2,scriptPubKeyBuffer.length);
+      var scriptPubKeyASM = output.scriptPubKey.asm;
+      if (scriptPubKeyASM.split(" ")[0] == "OP_RETURN") {
+        var data = new Buffer(scriptPubKeyASM.split(" ")[1], "hex");
         var parsedLength = dataPayload.parse(data);
         dataOutput = parsedLength ? j : 0;
         transactionTotal = parsedLength ? parsedLength : transactionTotal;
@@ -117,7 +117,6 @@ var scanSingle = function(options, callback) {
     }
   };
   commonBlockchain.Transactions.Get([txid], onTransaction)
-
 };
 
 module.exports = {

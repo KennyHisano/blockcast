@@ -47,11 +47,12 @@ var create = function(options, callback) {
     var lengthByte = new Buffer(dth(length), "hex");
     var count = OP_RETURN_SIZE - 3;
     var dataPayload = compressedBuffer.slice(0, count);
-    payloads.push(Buffer.concat([MAGIC_NUMBER, VERSION, lengthByte, dataPayload]));
+    var payload = Buffer.concat([MAGIC_NUMBER, VERSION, lengthByte, dataPayload]);
+    payloads.push(payload);
     while(count < dataLength) {
-      dataPayload = compressedBuffer.slice(count, count+OP_RETURN_SIZE);
+      payload = compressedBuffer.slice(count, count+OP_RETURN_SIZE);
       count += OP_RETURN_SIZE;
-      payloads.push(dataPayload);
+      payloads.push(payload);
     }
     callback(false, payloads);
   });

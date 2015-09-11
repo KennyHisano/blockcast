@@ -42,15 +42,12 @@ var getPrimaryTransactions = function(transactions) {
   for (var i = 0; i < transactions.length; i++) {
     var transactionHex = transactions[i];
     var transaction = txHexToJSON(transactionHex);
-    //console.log(transaction);
     var vout = transaction.vout;
     for (var j = vout.length - 1; j >= 0; j--) {
       var output = vout[j];
-      var scriptPubKey = output.scriptPubKey.hex;
-      var scriptPubKeyBuffer = new Buffer(scriptPubKey, 'hex');
-      //console.log(scriptPubKeyBuffer);
-      if (scriptPubKeyBuffer[0] == 106) {
-        var data = scriptPubKeyBuffer.slice(2,scriptPubKeyBuffer.length);
+      var scriptPubKeyASM = output.scriptPubKey.asm;
+      if (scriptPubKeyASM.split(" ")[0] == "OP_RETURN") {
+        var data = new Buffer(scriptPubKeyASM.split(" ")[1], "hex");
         var length = dataPayload.parse(data);
         if (length) {
           primaryTransactions.push({tx: transaction, length: length, dataOutput: j, data: data});
@@ -65,7 +62,8 @@ var createTransactionWithPayload = function(payload, primaryTxHex) {
   var primaryTx = primaryTxHex ? bitcoin.TransactionBuilder.fromTransaction(bitcoin.Transaction.fromHex(primaryTxHex)) : false;
   var lengthBuffer = new Buffer(1);
   lengthBuffer.writeUInt8(payload.length, 0);
-  var payloadScript = bitcoin.Script.fromBuffer(Buffer.concat([OP_RETURN_BUFFER, lengthBuffer, payload]));
+  //var payloadScript = bitcoin.Script.fromBuffer(Buffer.concat([OP_RETURN_BUFFER, lengthBuffer, payload]));
+  var payloadScript = bitcoin.Script.fromChunks([bitcoin.opcodes.OP_RETURN, payload]);
   var tx = primaryTx || new bitcoin.TransactionBuilder();
   tx.addOutput(payloadScript, 0);
   return tx;
@@ -93,9 +91,9 @@ var getData = function(options, callback) {
           if (prevTxid === _tx.txid) {
             tx = _tx;
             prevTx = tx;
-            var hexData = tx.vout[dataOutput].scriptPubKey.hex;
-            var data = new Buffer(hexData, 'hex');
-            payloads.push(data.slice(2, data.length));
+            var scriptPubKeyASM = tx.vout[dataOutput].scriptPubKey.asm;
+            var data = new Buffer(scriptPubKeyASM.split(" ")[1], "hex");  
+            payloads.push(data);
           }
         });
       }

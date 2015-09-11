@@ -152,9 +152,11 @@ describe("bitcoin transaction builder", function() {
       var primaryTx = txHexToJSON(primaryTxHex);
       expect(primaryTx.txid).toBe(txid);
       var primaryData = new Buffer(primaryTx.vout[0].scriptPubKey.hex, 'hex');
+      //console.log(primaryData);
       var length = dataPayload.parse(primaryData.slice(2, primaryData.length));
       expect(length).toBe(1);
       bitcoinTransactionBuilder.getData({transactions:signedTransactions}, function(error, decodedTransactions) {
+        //console.log(err, decodedTransactions);
         var decodedData = decodedTransactions[0].data;
         expect(data).toBe(decodedData);
         done();
@@ -174,7 +176,7 @@ describe("bitcoin transaction builder", function() {
       var primaryTx = txHexToJSON(primaryTxHex);
       expect(primaryTx.txid).toBe(txid);
       var primaryData = new Buffer(primaryTx.vout[0].scriptPubKey.hex, 'hex');
-      var length = dataPayload.parse(primaryData.slice(2, primaryData.length));
+      var length = dataPayload.parse(primaryData.slice(3, primaryData.length));
       var txHex1 = signedTransactions[1];
       var tx1 = txHexToJSON(txHex1);
       expect(primaryTx.vin[0].txid).toBe(tx1.txid);
@@ -199,7 +201,7 @@ describe("bitcoin transaction builder", function() {
       var primaryTx = txHexToJSON(primaryTxHex);
       expect(primaryTx.txid).toBe(txid);
       var primaryData = new Buffer(primaryTx.vout[0].scriptPubKey.hex, 'hex');
-      var length = dataPayload.parse(primaryData.slice(2, primaryData.length));
+      var length = dataPayload.parse(primaryData.slice(3, primaryData.length));
       expect(length).toBe(4);
       var tx1 = txHexToJSON(signedTransactions[1]);
       expect(primaryTx.vin[0].txid).toBe(tx1.txid);
@@ -227,7 +229,7 @@ describe("bitcoin transaction builder", function() {
       var primaryTx = txHexToJSON(primaryTxHex);
       expect(primaryTx.txid).toBe(txid);
       var primaryData = new Buffer(primaryTx.vout[0].scriptPubKey.hex, 'hex');
-      var length = dataPayload.parse(primaryData.slice(2, primaryData.length));
+      var length = dataPayload.parse(primaryData.slice(3, primaryData.length));
       expect(length).toBe(7);
       signedTransactions.forEach(function(signedTxHex) {
         var signedTx = txHexToJSON(signedTxHex);
@@ -348,7 +350,7 @@ describe("bitcoin transaction builder", function() {
           });
         });
         var primaryData = new Buffer(primaryTx.vout[2].scriptPubKey.hex, 'hex');
-        var length = dataPayload.parse(primaryData.slice(2, primaryData.length));
+        var length = dataPayload.parse(primaryData.slice(3, primaryData.length));
         expect(length).toBe(2);
         var txHex1 = signedTransactions[1];
         var tx1 = txHexToJSON(txHex1);
@@ -380,7 +382,7 @@ describe("bitcoin transaction builder", function() {
         var primaryTxHex = signedTransactions[0];
         var primaryTx = txHexToJSON(primaryTxHex);
         var primaryData = new Buffer(primaryTx.vout[2].scriptPubKey.hex, 'hex');
-        var length = dataPayload.parse(primaryData.slice(2, primaryData.length));
+        var length = dataPayload.parse(primaryData.slice(3, primaryData.length));
         expect(length).toBe(4);
         signedTransactions.forEach(function(signedTxHex) {
           var signedTx = txHexToJSON(signedTxHex);
