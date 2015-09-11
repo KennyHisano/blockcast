@@ -1,0 +1,6 @@
+image: node0.10
+env:
+  - DEBUG=*
+script:
+  - npm install
+  - npm test
