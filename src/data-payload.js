@@ -29,6 +29,8 @@ var decompress = function(compressedBuffer, callback) {
 };
 
 var parse = function(payload) {
+  console.log("payload", payload);
+  console.log("payload.slice(2,3)", payload.slice(2,3));
   var length = payload.slice(2,3).readUIntLE(0, 1);
   var valid = payload.slice(0,1).equals(MAGIC_NUMBER) && payload.slice(1,2).equals(VERSION) && length;
   return valid ? length : false;
