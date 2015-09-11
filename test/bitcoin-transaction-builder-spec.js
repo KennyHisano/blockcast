@@ -8,7 +8,11 @@ var bitcoin = require("bitcoinjs-lib");
 var async = require("async");
 var commonBlockchain = require("mem-common-blockchain")();
 
+var env = require('node-env-file');
+env('./.env', { raise: false });
+
 var testnetCommonBlockchain = require('blockcypher-unofficial')({
+  key: BLOCKCYPHER_TOKEN,
   network: "testnet"
 });
 

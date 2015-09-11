@@ -1,6 +1,8 @@
 blockcast
 ===
 
+[![Build Status](http://drone.d.blockai.com/api/badge/github.com/blockai/blockcast/status.svg?branch=master)](http://drone.d.blockai.com/github.com/blockai/blockcast)
+
 A multi-transaction protocol for storing data in the Bitcoin blockchain.
 
 This protocol is intended for use while **developing** ```OP_RETURN``` based protocols. Mature protocols should switch to a custom ```OP_RETURN``` method that uses as few transactions as possible to store data. 
