@@ -1,5 +1,3 @@
-var assert = require("assert");
-
 var Bitcoin = require("bitcoinjs-lib");
 var zlib = require("zlib");
 
@@ -67,7 +65,9 @@ var decode = function(payloads, callback) {
   if (!length) {
     callback("no start header", false);
   }
-  assert.equal(payloads.length, length);
+  if (payloads.length !== length) {
+    callback("length mismatch", false);
+  }
   var compressedBuffer = new Buffer("");
   for (var i = 0; i < length; i++) {
     var payload = payloads[i];

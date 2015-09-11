@@ -123,7 +123,6 @@ var scanSingle = function(options, callback) {
 module.exports = {
   post: post,
   scanSingle: scanSingle,
-  parse: dataPayload.getInfo,
   payloadsLength: payloadsLength,
   bitcoinTransactionBuilder: bitcoinTransactionBuilder
 };
