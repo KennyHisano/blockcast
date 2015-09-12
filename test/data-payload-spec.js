@@ -31,6 +31,20 @@ function shuffle(o){ //v1.0
 
 describe("data payload", function() {
 
+  it("should parse a data payload", function(done) {
+    var payload = new Buffer("1f0002", "hex");
+    var length = dataPayload.parse(payload);
+    expect(length).toBe(2);
+    done();
+  });
+
+  it("should no parse a bad data payload", function(done) {
+    var payload = new Buffer("1f0178", "hex");
+    var length = dataPayload.parse(payload);
+    expect(length).toBe(false);
+    done();
+  });
+
   it("should create a data payload for some random data of 30 bytes", function(done) {
     var data = randomString(30);
     dataPayload.create({data: data}, function(err, payloads) {

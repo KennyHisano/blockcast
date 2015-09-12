@@ -27,8 +27,8 @@ var decompress = function(compressedBuffer, callback) {
 };
 
 var parse = function(payload) {
-  var length = payload.slice(2,3).readUIntLE(0, 1);
-  var valid = payload.slice(0,1).equals(MAGIC_NUMBER) && payload.slice(1,2).equals(VERSION) && length;
+  var length = payload.slice(2,3)[0];
+  var valid = payload.slice(0,1)[0] === MAGIC_NUMBER[0] && payload.slice(1,2)[0] === VERSION[0];
   return valid ? length : false;
 };
 
@@ -62,7 +62,7 @@ var decode = function(payloads, callback) {
   var firstPayload = payloads[0];
   var startHeader = firstPayload.slice(0,3);
   var compressedBuffer;
-  var length = startHeader.slice(2,3).readUIntLE(0, 1);
+  var length = startHeader.slice(2,3)[0];
   if (!length) {
     callback("no start header", false);
   }
