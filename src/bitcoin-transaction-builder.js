@@ -62,7 +62,6 @@ var createTransactionWithPayload = function(payload, primaryTxHex) {
   var primaryTx = primaryTxHex ? bitcoin.TransactionBuilder.fromTransaction(bitcoin.Transaction.fromHex(primaryTxHex)) : false;
   var lengthBuffer = new Buffer(1);
   lengthBuffer.writeUInt8(payload.length, 0);
-  //var payloadScript = bitcoin.Script.fromBuffer(Buffer.concat([OP_RETURN_BUFFER, lengthBuffer, payload]));
   var payloadScript = bitcoin.Script.fromChunks([bitcoin.opcodes.OP_RETURN, payload]);
   var tx = primaryTx || new bitcoin.TransactionBuilder();
   tx.addOutput(payloadScript, 0);
