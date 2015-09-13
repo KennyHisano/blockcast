@@ -84,7 +84,6 @@ var scanSingle = function(options, callback) {
       return callback(err, false);
     }
     var vout = tx.vout;
-    var dataOutput;
     for (var j = vout.length - 1; j >= 0; j--) {
       var output = vout[j];
       var scriptPubKey = output.scriptPubKey.hex;
@@ -92,7 +91,6 @@ var scanSingle = function(options, callback) {
       if (scriptPubKeyASM.split(" ")[0] == "OP_RETURN") {
         var data = new Buffer(scriptPubKeyASM.split(" ")[1], "hex");
         var parsedLength = dataPayload.parse(data);
-        dataOutput = parsedLength ? j : 0;
         transactionTotal = parsedLength ? parsedLength : transactionTotal;
         payloads.push(data);
       }
@@ -107,7 +105,7 @@ var scanSingle = function(options, callback) {
       });
       return;
     }
-    var prevTxid = tx.vin[dataOutput].txid;
+    var prevTxid = tx.vin[tx.vin.length-1].txid;
     if (!prevTxid) {
       callback("missing: " + (allTransactions.length + 1), false);
       return;
