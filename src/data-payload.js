@@ -64,23 +64,26 @@ var decode = function(payloads, callback) {
   var compressedBuffer;
   var length = startHeader.slice(2,3)[0];
   if (!length) {
-    callback("no start header", false);
+    return callback("no start header", false);
   }
   if (payloads.length !== length) {
-    callback("length mismatch", false);
+    return callback("length mismatch", false);
   }
   var compressedBuffer = new Buffer("");
   for (var i = 0; i < length; i++) {
     var payload = payloads[i];
     var dataPayload = i == 0 ? payload.slice(3, OP_RETURN_SIZE) : payload;
+    if (!dataPayload) {
+      return callback("missing payload", false);
+    }
     compressedBuffer = Buffer.concat([compressedBuffer, dataPayload]);
   };
   decompress(compressedBuffer, function(err, data) {
     if (!data || !data.toString) {
-      callback(true, "");
+      return callback(true, "");
     }
     else {
-      callback(false, data.toString());
+      return callback(false, data.toString());
     }
   });
 };

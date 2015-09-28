@@ -73,19 +73,28 @@ var payloadsLength = function(options, callback) {
 
 var scanSingle = function(options, callback) {
   var txid = options.txid;
+  var tx = options.tx;
   var commonBlockchain = options.commonBlockchain;
   var allTransactions = [];
   var payloads = [];
   var transactionTotal;
-  var addresses;
+  var addresses = [];
   var length;
-  var onTransaction = function(err, transactions) {
-    var tx = txHexToJSON(transactions[0].txHex);
+  var onTransaction = function(err, transactions, tx) {
+    if (!tx && transactions[0].txHex) {
+      tx = txHexToJSON(transactions[0].txHex);
+    }
     if (!tx) {
       return callback(err, false);
     }
     if (allTransactions.length === 0) {
-      addresses = tx.vin[0].addresses;
+      tx.vin.forEach(function(vin) {
+        vin.addresses.forEach(function(address) {
+          if (addresses.indexOf(address) === -1) {
+            addresses.push(address);
+          }
+        });
+      });
     }
     var vout = tx.vout;
     for (var j = vout.length - 1; j >= 0; j--) {
@@ -93,7 +102,14 @@ var scanSingle = function(options, callback) {
       var scriptPubKey = output.scriptPubKey.hex;
       var scriptPubKeyASM = output.scriptPubKey.asm;
       if (scriptPubKeyASM.split(" ")[0] == "OP_RETURN") {
-        var data = new Buffer(scriptPubKeyASM.split(" ")[1], "hex");
+        var hex = scriptPubKeyASM.split(" ")[1] || "";
+        var data;
+        try {
+          data = new Buffer(hex, "hex");
+        }
+        catch (e) {
+          data = new Buffer("", "hex");
+        }
         var parsedLength = dataPayload.parse(data);
         transactionTotal = parsedLength ? parsedLength : transactionTotal;
         payloads.push(data);
@@ -118,7 +134,12 @@ var scanSingle = function(options, callback) {
       commonBlockchain.Transactions.Get([prevTxid], onTransaction);
     }
   };
-  commonBlockchain.Transactions.Get([txid], onTransaction)
+  if (tx) {
+    onTransaction(false, [], tx);
+  }
+  else {
+    commonBlockchain.Transactions.Get([txid], onTransaction)
+  }
 };
 
 module.exports = {
