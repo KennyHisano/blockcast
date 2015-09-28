@@ -77,11 +77,15 @@ var scanSingle = function(options, callback) {
   var allTransactions = [];
   var payloads = [];
   var transactionTotal;
+  var addresses;
   var length;
   var onTransaction = function(err, transactions) {
     var tx = txHexToJSON(transactions[0].txHex);
     if (!tx) {
       return callback(err, false);
+    }
+    if (allTransactions.length === 0) {
+      addresses = tx.vin[0].addresses;
     }
     var vout = tx.vout;
     for (var j = vout.length - 1; j >= 0; j--) {
@@ -101,7 +105,7 @@ var scanSingle = function(options, callback) {
     allTransactions.push(tx);
     if (allTransactions.length == transactionTotal) {
       dataPayload.decode(payloads, function(err, data) {
-        callback(err, data);
+        callback(err, data, addresses);
       });
       return;
     }

@@ -157,7 +157,8 @@ describe("blockcast", function() {
     blockcast.scanSingle({
       txid: txid,
       commonBlockchain: commonBlockchain
-    }, function(err, data) {
+    }, function(err, data, addresses) {
+      expect(addresses[0]).toBe('msLoJikUfxbc2U5UhRSjc2svusBSqMdqxZ');
       expect(data).toBe('{"op":"t","value":50000000,"sha1":"dd09da17ec523e92e38b5f141d9625a5e77bb9fa"}');
       done();
     });
@@ -168,7 +169,8 @@ describe("blockcast", function() {
     blockcast.scanSingle({
       txid: txid,
       commonBlockchain: commonBlockchain
-    }, function(err, data) {
+    }, function(err, data, addresses) {
+      expect(addresses[0]).toBe('msLoJikUfxbc2U5UhRSjc2svusBSqMdqxZ');
       expect(data).toBe(JSONdata);
       done();
     });
@@ -198,7 +200,8 @@ describe("blockcast", function() {
       blockcast.scanSingle({
         txid: blockcastTx.txid,
         commonBlockchain: memCommonBlockchain
-      }, function(err, data) {
+      }, function(err, data, addresses) {
+        expect(addresses[0]).toBe('msLoJikUfxbc2U5UhRSjc2svusBSqMdqxZ');
         expect(data).toBe(randomStringData);
         done();
     });
