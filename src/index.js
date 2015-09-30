@@ -73,7 +73,7 @@ var payloadsLength = function(options, callback) {
 
 var scanSingle = function(options, callback) {
   var txid = options.txid;
-  var tx = options.tx;
+  var tx = options.tx ? options.tx.txHex ? txHexToJSON(options.tx.txHex) : options.tx : false;
   var commonBlockchain = options.commonBlockchain;
   var allTransactions = [];
   var payloads = [];
