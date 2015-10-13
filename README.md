@@ -35,7 +35,7 @@ var commonWallet = {
 }
 ```
 
-We'll need to provide an instance of a commonBlockchain which will provide functions for signing a transaction, propagating a trasnaction, and looking up a transaction by ```txid```.
+We'll need to provide an instance of a commonBlockchain which will provide functions for getting unspent outputs, propagating a trasnaction, and looking up a transaction by ```txid```.
 
 In this example we're using the in memory version that is provided by ```mem-common-blockchain```.
 
@@ -45,7 +45,25 @@ var memCommonBlockchain = require("mem-common-blockchain")({
   type: "local"
 });
 
-// or we could connect to testnet
+// or local Bitcoin-Qt.app via the JSON-RPC
+
+var RpcClient = require('bitcoind-rpc')
+
+var config = {
+  protocol: 'http',
+  user: 'rpcuser',
+  pass: 'rpcpassword',
+  host: '127.0.0.1',
+  port: '18332'
+}
+
+var rpc = new RpcClient(config)
+
+var rpcCommonBlockchain = require('rpc-common-blockchain')({
+  rpc: rpc
+})
+
+// or testnet via blockcypher
 
 testnetCommonBlockchain = require('blockcypher-unofficial')({
   network: "testnet"
