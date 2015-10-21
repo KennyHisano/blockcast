@@ -95,8 +95,12 @@ blockcast.scanSingle({
   var document = JSON.parse(body);
   console.log(document);
 });
-
 ```
+
+Scan for data from a range of blocks
+---
+
+You can use the [```blockcast-state-engine```](https://github.com/blockai/blockcast-state-engine) module to scan the Bitcoin blockchain for an ordered list of Blockcast data.
 
 How does it work?
 ---
