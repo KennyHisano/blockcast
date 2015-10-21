@@ -155,25 +155,37 @@ describe('data payload', function () {
     })
   })
 
-  it('should create a data payload for some 30 byte data and then decode it', function (done) {
-    var data = loremIpsum.slice(0, 30)
+  it('should create a known data payload and then decode it', function (done) {
+    var data = '{"op":"t","sha1":"5eac19f495bfa2502b76e39c8b1be7aaf66225d5","value":50000,"ttl":365}'
     dataPayload.create({data: data}, function (err, payloads) {
       if (err) { } // TODO
       dataPayload.decode(payloads, function (err, decodedData) {
         if (err) { } // TODO
-        expect(data).toBe(decodedData)
+        expect(decodedData).toBe(data)
         done()
       })
     })
   })
 
   it('should create a data payload for some 30 byte data and then decode it', function (done) {
+    var data = loremIpsum.slice(0, 30)
+    dataPayload.create({data: data}, function (err, payloads) {
+      if (err) { } // TODO
+      dataPayload.decode(payloads, function (err, decodedData) {
+        if (err) { } // TODO
+        expect(decodedData).toBe(data)
+        done()
+      })
+    })
+  })
+
+  it('should create a data payload for some 78 byte data and then decode it', function (done) {
     var data = loremIpsum.slice(0, 78)
     dataPayload.create({data: data}, function (err, payloads) {
       if (err) { } // TODO
       dataPayload.decode(payloads, function (err, decodedData) {
         if (err) { } // TODO
-        expect(data).toBe(decodedData)
+        expect(decodedData).toBe(data)
         done()
       })
     })
@@ -185,7 +197,7 @@ describe('data payload', function () {
       if (err) { } // TODO
       dataPayload.decode(payloads, function (err, decodedData) {
         if (err) { } // TODO
-        expect(data).toBe(decodedData)
+        expect(decodedData).toBe(data)
         done()
       })
     })

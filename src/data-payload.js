@@ -42,17 +42,16 @@ var create = function (options, callback) {
       callback('data payload > 1277', false)
       return
     }
-    var length = parseInt(((dataLength - OP_RETURN_SIZE) / OP_RETURN_SIZE) + 2, 10)
-    var lengthByte = new Buffer(dth(length), 'hex')
     var count = OP_RETURN_SIZE - 3
-    var dataPayload = compressedBuffer.slice(0, count)
-    var payload = Buffer.concat([MAGIC_NUMBER, VERSION, lengthByte, dataPayload])
-    payloads.push(payload)
     while (count < dataLength) {
       payload = compressedBuffer.slice(count, count + OP_RETURN_SIZE)
       count += OP_RETURN_SIZE
       payloads.push(payload)
     }
+    var lengthByte = new Buffer(dth(payloads.length + 1), 'hex')
+    var dataPayload = compressedBuffer.slice(0, OP_RETURN_SIZE - 3)
+    var payload = Buffer.concat([MAGIC_NUMBER, VERSION, lengthByte, dataPayload])
+    payloads.unshift(payload)
     callback(false, payloads)
   })
 }

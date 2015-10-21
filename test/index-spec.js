@@ -147,7 +147,7 @@ describe('blockcast', function () {
       commonBlockchain: commonBlockchain
     }, function (err, data, addresses, primaryTx) {
       if (err) { } // TODO
-      expect(addresses[0]).toBe('msLoJikUfxbc2U5UhRSjc2svusBSqMdqxZ')
+      expect(addresses[0]).toBe('mwaj74EideMcpe4cjieuPFpqacmpjtKSk1')
       expect(data).toBe('{"op":"t","value":50000000,"sha1":"dd09da17ec523e92e38b5f141d9625a5e77bb9fa"}')
       expect(primaryTx.txid).toBe(txid)
       expect(primaryTx.vin.length).toBe(2)
