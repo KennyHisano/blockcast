@@ -1,6 +1,6 @@
 {
   "name": "blockcast",
-  "version": "3.4.0",
+  "version": "3.5.0",
   "description": "A multi-transaction protocol for storing data in the Bitcoin blockchain.",
   "main": "./src/index.js",
   "scripts": {
@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "async": "^1.4.2",
-    "bitcoin-tx-hex-to-json": "0.0.3",
+    "bitcoin-tx-hex-to-json": "^1.0.0",
     "bitcoinjs-lib": "^1.5.8"
   }
 }
