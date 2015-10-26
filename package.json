@@ -1,6 +1,6 @@
 {
   "name": "blockcast",
-  "version": "3.6.0",
+  "version": "3.7.0",
   "description": "A multi-transaction protocol for storing data in the Bitcoin blockchain.",
   "main": "./src/index.js",
   "scripts": {
@@ -29,13 +29,13 @@
   "devDependencies": {
     "blockcypher-unofficial": "^1.5.0",
     "jasmine-node": "^1.14.5",
-    "mem-common-blockchain": "0.0.2",
+    "mem-common-blockchain": "^1.5.0",
     "node-env-file": "^0.1.7",
-    "test-common-wallet": "^1.2.1"
+    "test-common-wallet": "^1.3.1"
   },
   "dependencies": {
     "async": "^1.4.2",
-    "bitcoin-tx-hex-to-json": "^1.0.0",
+    "bitcoin-tx-hex-to-json": "^1.2.0",
     "bitcoinjs-lib": "^1.5.8"
   }
 }

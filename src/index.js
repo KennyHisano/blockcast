@@ -9,21 +9,13 @@ var post = function (options, callback) {
   var data = options.data
   var fee = options.fee
   var primaryTxHex = options.primaryTxHex
+  var destinationAddress = options.destinationAddress
+  var value = options.value
   var signPrimaryTxHex = options.signPrimaryTxHex
   var propagationStatus = options.propagationStatus || function () {}
   var buildStatus = options.buildStatus || function () {}
   var retryMax = options.retryMax || 5
-  var id = options.id || 0 // THINK ABOUT THIS!!! Maybe go through their recent transactions by default? options.transactions?
-  bitcoinTransactionBuilder.createSignedTransactionsWithData({
-    primaryTxHex: primaryTxHex,
-    signPrimaryTxHex: signPrimaryTxHex,
-    data: data,
-    id: id,
-    fee: fee,
-    buildStatus: buildStatus,
-    commonBlockchain: commonBlockchain,
-    commonWallet: commonWallet
-  }, function (err, signedTransactions, txid) {
+  var onSignedTransactions = function (err, signedTransactions, txid) {
     if (err) { } // TODO
     var reverseSignedTransactions = signedTransactions.reverse()
     var transactionTotal = reverseSignedTransactions.length
@@ -56,7 +48,21 @@ var post = function (options, callback) {
       }
     }
     commonBlockchain.Transactions.Propagate(reverseSignedTransactions[0], propagateResponse)
-  })
+  }
+  if (options.signedTransactions && options.txid) {
+    return onSignedTransactions(false, options.signedTransactions, options.txid)
+  }
+  bitcoinTransactionBuilder.createSignedTransactionsWithData({
+    destinationAddress: destinationAddress,
+    value: value,
+    primaryTxHex: primaryTxHex,
+    signPrimaryTxHex: signPrimaryTxHex,
+    data: data,
+    fee: fee,
+    buildStatus: buildStatus,
+    commonBlockchain: commonBlockchain,
+    commonWallet: commonWallet
+  }, onSignedTransactions)
 }
 
 var payloadsLength = function (options, callback) {

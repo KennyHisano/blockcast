@@ -11,6 +11,7 @@ var loadAndSignTransaction = function (options, callback) {
   var tx = options.tx
   var address = options.address
   var fee = options.fee
+  var destinationValue = options.destinationValue || 0
   var unspentOutputs = options.unspentOutputs
   var unspentValue = 0
   var compare = function (a, b) {
@@ -32,7 +33,11 @@ var loadAndSignTransaction = function (options, callback) {
     unspentValue += unspentOutput.value
     tx.addInput(unspentOutput.txid, unspentOutput.vout)
   }
-  tx.addOutput(address, unspentValue - fee)
+  var change = unspentValue - fee - destinationValue
+  tx.addOutput(address, change)
+  if (options.skipSign) {
+    return callback(false, tx)
+  }
   options.signTransaction(tx, txInputIndex, function (err, signedTx) {
     if (err) { } // TODO
     callback(false, signedTx)
@@ -125,9 +130,17 @@ var signFromTransactionHex = function (signTransactionHex) {
 
 var createSignedTransactionsWithData = function (options, callback) {
   var primaryTxHex = options.primaryTxHex
+  var usedTxids = []
+  var destinationAddress = options.destinationAddress
+  var destinationValue = options.value || 0
+  if (primaryTxHex) {
+    var primaryTx = txHexToJSON(primaryTxHex)
+    usedTxids = primaryTx.vin.map(function (input) { return input.txid })
+  }
   var signPrimaryTxHex = options.signPrimaryTxHex
   var commonWallet = options.commonWallet
   var address = commonWallet.address
+  var returnWithUnsignedPrimary = options.returnWithUnsignedPrimary
   var fee = options.fee || 1000
   var commonBlockchain = options.commonBlockchain
   var buildStatus = options.buildStatus || function () {}
@@ -149,7 +162,7 @@ var createSignedTransactionsWithData = function (options, callback) {
         payloadsLength: payloadsLength
       })
 
-      var totalCost = payloadsLength * fee
+      var totalCost = payloadsLength * fee + destinationValue
       var existingUnspents = []
       var unspentValue = 0
       var compare = function (a, b) {
@@ -164,6 +177,9 @@ var createSignedTransactionsWithData = function (options, callback) {
       unspentOutputs.sort(compare)
       for (var i = unspentOutputs.length - 1; i >= 0; i--) {
         var unspentOutput = unspentOutputs[i]
+        if (usedTxids.indexOf(unspentOutput.txid) > -1) {
+          continue
+        }
         unspentValue += unspentOutput.value
         existingUnspents.push(unspentOutput)
         if (unspentValue >= totalCost) {
@@ -173,6 +189,11 @@ var createSignedTransactionsWithData = function (options, callback) {
 
       var signedTransactionResponse = function (err, signedTx) {
         if (err) { } // TODO
+
+        if (signedTransactionsCounter === 0 && destinationAddress && destinationValue) {
+          signedTx.addOutput(destinationAddress, destinationValue)
+        }
+
         var signedTxBuilt = signedTx.buildIncomplete()
         var signedTxHex = signedTxBuilt.toHex()
         var signedTxid = signedTxBuilt.getId()
@@ -207,12 +228,16 @@ var createSignedTransactionsWithData = function (options, callback) {
               value: value
             }
 
+            var skipSign = returnWithUnsignedPrimary && signedTransactionsCounter === 0
+
             loadAndSignTransaction({
               fee: fee,
               tx: tx,
               unspentOutputs: [unspent],
               address: address,
-              signTransaction: options.signTransaction
+              skipSign: skipSign,
+              signTransaction: options.signTransaction,
+              destinationValue: (signedTransactionsCounter === 0) ? destinationValue : false
             }, signedTransactionResponse)
           }
         }
@@ -241,7 +266,8 @@ var createSignedTransactionsWithData = function (options, callback) {
         unspentOutputs: existingUnspents,
         address: address,
         signTransaction: options.signTransaction,
-        signPrimaryTxHex: signPrimaryTxHex
+        signPrimaryTxHex: signPrimaryTxHex,
+        destinationValue: (signedTransactionsCounter === 0) ? destinationValue : false
       }
 
       loadAndSignTransaction(signOptions, signedTransactionResponse)
